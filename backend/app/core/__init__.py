@@ -1,0 +1,1 @@
+"""CampusOS — core package."""

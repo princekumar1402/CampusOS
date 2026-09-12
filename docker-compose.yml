@@ -1,0 +1,81 @@
+version: "3.9"
+
+# =============================================================================
+# CampusOS — Development Docker Compose
+# =============================================================================
+# Starts infrastructure services (PostgreSQL, Redis).
+# The backend and frontend are run locally (outside Docker) during development
+# for a faster hot-reload workflow.
+#
+# Usage:
+#   docker compose up -d          # start infrastructure
+#   docker compose down           # stop infrastructure
+#   docker compose down -v        # stop and remove volumes
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL — Primary relational database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: campusOS_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-campusOS_db}
+      POSTGRES_USER: ${POSTGRES_USER:-campusOS_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-campusOS_user} -d ${POSTGRES_DB:-campusOS_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - campusOS_network
+
+  # ---------------------------------------------------------------------------
+  # Redis — Caching, rate limiting, background job broker
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: campusOS_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-devredispassword}
+      --appendonly yes
+      --appendfsync everysec
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-devredispassword}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - campusOS_network
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  campusOS_network:
+    driver: bridge
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
