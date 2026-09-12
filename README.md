@@ -44,12 +44,20 @@ digital experience for students, faculty, administrators, and staff.
 | Docker Compose (PostgreSQL + Redis) | ✅ Done |
 | Architecture documentation + Mermaid diagrams | ✅ Done |
 | ADR-001: Modular Monolith decision | ✅ Done |
+| **Authentication & RBAC (Argon2id + JWT + Refresh Sessions)** | ✅ **Done** |
 
-## 🔜 Planned Modules (Not Yet Implemented)
+### 🔐 Authentication & RBAC API Endpoints
 
-| Module | Status |
-|--------|--------|
-| Authentication & RBAC (JWT) | 🔜 Planned |
+| Endpoint | Method | Access | Description |
+|---|---|---|---|
+| `/api/v1/auth/register` | `POST` | Public | Register new user (assigns `STUDENT` default role) |
+| `/api/v1/auth/login` | `POST` | Public | Authenticate user, issue access token & HttpOnly refresh cookie |
+| `/api/v1/auth/refresh` | `POST` | Public | Rotate refresh token session & issue new access token |
+| `/api/v1/auth/logout` | `POST` | Public | Revoke refresh token session & clear cookie |
+| `/api/v1/auth/me` | `GET` | Authenticated | Fetch current user safe profile |
+| `/api/v1/auth/test-student` | `GET` | `STUDENT`, `ADMIN` | Test RBAC protected endpoint |
+| `/api/v1/auth/test-faculty` | `GET` | `FACULTY`, `ADMIN` | Test RBAC protected endpoint |
+| `/api/v1/auth/test-admin` | `GET` | `ADMIN` | Test RBAC protected endpoint |
 | Student profiles & management | 🔜 Planned |
 | Faculty profiles & management | 🔜 Planned |
 | Departments & organizational structure | 🔜 Planned |

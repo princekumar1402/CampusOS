@@ -2,8 +2,6 @@
  * CampusOS — Shared TypeScript Types
  *
  * Core types shared across all frontend modules.
- * Domain-specific types will live in their own files (e.g., types/students.ts)
- * as those modules are implemented.
  */
 
 // ---------------------------------------------------------------------------
@@ -48,22 +46,38 @@ export interface HealthCheckResponse {
 }
 
 // ---------------------------------------------------------------------------
-// User / Auth (placeholder — will be expanded in Auth module)
+// User / Auth
 // ---------------------------------------------------------------------------
 
-export type UserRole =
-  | "admin"
-  | "faculty"
-  | "student"
-  | "staff";
+export type UserRole = "STUDENT" | "FACULTY" | "CLUB_ADMIN" | "ADMIN";
 
-export interface UserBase {
+export interface UserResponse {
   id: string;
-  email: string;
   full_name: string;
+  email: string;
   role: UserRole;
   is_active: boolean;
+  is_verified: boolean;
   created_at: string;
+  last_login_at?: string | null;
+}
+
+export interface RegisterRequest {
+  full_name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  user: UserResponse;
 }
 
 // ---------------------------------------------------------------------------

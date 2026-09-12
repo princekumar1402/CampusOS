@@ -17,7 +17,6 @@ from typing import Any
 from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
 
-
 # =============================================================================
 # Domain Exception Hierarchy
 # =============================================================================

@@ -10,7 +10,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import AnyHttpUrl, PostgresDsn, RedisDsn, field_validator, model_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -40,9 +40,13 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
 
     # -------------------------------------------------------------------------
-    # Security
+    # Security & JWT
     # -------------------------------------------------------------------------
     secret_key: str = "CHANGE_ME_GENERATE_A_STRONG_SECRET_KEY"
+    jwt_secret_key: str = "CHANGE_ME_GENERATE_A_STRONG_JWT_SECRET_KEY_MIN_32_BYTES"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    refresh_token_expire_days: int = 7
     cors_origins: list[str] = ["http://localhost:3000"]
 
     @field_validator("cors_origins", mode="before")
@@ -65,7 +69,7 @@ class Settings(BaseSettings):
     database_url: str | None = None
 
     @model_validator(mode="after")
-    def assemble_database_url(self) -> "Settings":
+    def assemble_database_url(self) -> Settings:
         if not self.database_url:
             self.database_url = (
                 f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}"
@@ -91,7 +95,7 @@ class Settings(BaseSettings):
     redis_url: str | None = None
 
     @model_validator(mode="after")
-    def assemble_redis_url(self) -> "Settings":
+    def assemble_redis_url(self) -> Settings:
         if not self.redis_url:
             self.redis_url = (
                 f"redis://:{self.redis_password}@{self.redis_host}:{self.redis_port}/{self.redis_db}"

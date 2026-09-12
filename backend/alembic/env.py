@@ -21,11 +21,12 @@ Usage:
 """
 from __future__ import annotations
 
-import sys
 import os
+import sys
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
+
 from alembic import context
 
 # ---------------------------------------------------------------------------
@@ -36,14 +37,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 # ---------------------------------------------------------------------------
 # Import application settings and the declarative Base
 # ---------------------------------------------------------------------------
-from app.core.config import settings
-from app.core.database import Base
-
 # ---------------------------------------------------------------------------
 # Import all models so that Alembic autogenerate can detect them.
 # As new domain models are added, import them here.
 # ---------------------------------------------------------------------------
 import app.models  # noqa: F401 — ensures all models are registered on Base
+from app.core.config import settings
+from app.core.database import Base
 
 # ---------------------------------------------------------------------------
 # Alembic Config object (gives access to alembic.ini values)

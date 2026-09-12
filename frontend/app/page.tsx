@@ -129,13 +129,25 @@ export default function HomePage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="badge bg-amber-500/15 text-amber-400 border border-amber-500/25">
+          <span className="badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
             <span className="relative w-2 h-2 flex">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
             </span>
-            Foundation Phase
+            Auth + RBAC Live
           </span>
+          <a
+            href="/login"
+            className="px-4 py-2 rounded-xl text-sm font-medium glass-card text-slate-200 hover:text-white transition-all"
+          >
+            Sign In
+          </a>
+          <a
+            href="/register"
+            className="px-4 py-2 rounded-xl text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-md shadow-indigo-500/20"
+          >
+            Register
+          </a>
         </div>
       </nav>
 
