@@ -171,10 +171,10 @@ Each module lives in a clearly bounded subdirectory and contains its own:
 | Module | Status | Description |
 |--------|--------|-------------|
 | Health | ✅ Implemented | API liveness + readiness checks |
-| Auth / RBAC | 🔜 Planned | JWT authentication, role-based access |
-| Students | 🔜 Planned | Student profiles, enrollments |
-| Faculty | 🔜 Planned | Faculty profiles, course assignments |
-| Departments | 🔜 Planned | Organizational structure |
+| Auth / RBAC | ✅ Implemented | JWT authentication, role-based access, sessions |
+| Students | ✅ Implemented | Student profiles, roll IDs, department associations |
+| Faculty | ✅ Implemented | Faculty profiles, designations, specializations |
+| Departments | ✅ Implemented | Organizational structure, department codes |
 | Courses | 🔜 Planned | Course catalogue, timetable |
 | Attendance | 🔜 Planned | Attendance tracking |
 | Assignments & Exams | 🔜 Planned | Academic submissions, grading |

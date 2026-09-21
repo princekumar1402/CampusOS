@@ -8,7 +8,7 @@ from __future__ import annotations
 import enum
 import uuid
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import (
     Boolean,
@@ -24,7 +24,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
-    pass
+    from app.models.academic import FacultyProfile, StudentProfile
 
 
 class UserRole(str, enum.Enum):
@@ -92,6 +92,18 @@ class User(Base):
     refresh_tokens: Mapped[list[RefreshToken]] = relationship(
         "RefreshToken",
         back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    student_profile: Mapped[Optional[StudentProfile]] = relationship(
+        "StudentProfile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    faculty_profile: Mapped[Optional[FacultyProfile]] = relationship(
+        "FacultyProfile",
+        back_populates="user",
+        uselist=False,
         cascade="all, delete-orphan",
     )
 

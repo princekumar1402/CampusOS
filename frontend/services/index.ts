@@ -11,3 +11,10 @@
  */
 
 export { get, post, put, patch, del, apiClient } from "@/lib/api-client";
+export * from "./academic";
+export * from "./attendance";
+export * from "./complaints";
+export * from "./events-clubs";
+export * from "./internships";
+export * from "./assistant";
+

@@ -26,6 +26,7 @@ def upgrade() -> None:
     user_role_enum = postgresql.ENUM(
         "STUDENT", "FACULTY", "CLUB_ADMIN", "ADMIN",
         name="user_role_enum",
+        create_type=False,
     )
     user_role_enum.create(op.get_bind(), checkfirst=True)
 

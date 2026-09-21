@@ -45,6 +45,7 @@ digital experience for students, faculty, administrators, and staff.
 | Architecture documentation + Mermaid diagrams | ✅ Done |
 | ADR-001: Modular Monolith decision | ✅ Done |
 | **Authentication & RBAC (Argon2id + JWT + Refresh Sessions)** | ✅ **Done** |
+| **Academic Management & Profiles (Departments, Student & Faculty Profiles)** | ✅ **Done** |
 
 ### 🔐 Authentication & RBAC API Endpoints
 
@@ -58,9 +59,21 @@ digital experience for students, faculty, administrators, and staff.
 | `/api/v1/auth/test-student` | `GET` | `STUDENT`, `ADMIN` | Test RBAC protected endpoint |
 | `/api/v1/auth/test-faculty` | `GET` | `FACULTY`, `ADMIN` | Test RBAC protected endpoint |
 | `/api/v1/auth/test-admin` | `GET` | `ADMIN` | Test RBAC protected endpoint |
-| Student profiles & management | 🔜 Planned |
-| Faculty profiles & management | 🔜 Planned |
-| Departments & organizational structure | 🔜 Planned |
+
+### 🏛️ Academic Management & Profiles API Endpoints
+
+| Endpoint | Method | Access | Description |
+|---|---|---|---|
+| `/api/v1/departments` | `GET` | Authenticated | List all academic departments |
+| `/api/v1/departments` | `POST` | `ADMIN` | Create a new academic department |
+| `/api/v1/departments/{id}` | `GET`, `PUT` | Authenticated / `ADMIN` | Get or update department details |
+| `/api/v1/students/me` | `GET`, `PUT` | Authenticated | Get or update logged-in user's student profile |
+| `/api/v1/students` | `GET` | Authenticated | Search & list student directory |
+| `/api/v1/students/{id}` | `GET` | Authenticated | Get student profile by ID |
+| `/api/v1/faculty/me` | `GET`, `PUT` | Authenticated | Get or update logged-in user's faculty profile |
+| `/api/v1/faculty` | `GET` | Authenticated | Search & list faculty directory |
+| `/api/v1/faculty/{id}` | `GET` | Authenticated | Get faculty profile by ID |
+
 | Course catalogue & timetable | 🔜 Planned |
 | Enrollment management | 🔜 Planned |
 | Attendance tracking | 🔜 Planned |

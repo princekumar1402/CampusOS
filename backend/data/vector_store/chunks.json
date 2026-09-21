@@ -1,0 +1,121 @@
+[
+  {
+    "document": "academic_guidelines.md",
+    "title": "CampusOS Academic Guidelines and Student Code (MVP Policy Example)",
+    "section": "Overview",
+    "content": "These academic guidelines govern student enrollment, course registration, grading policies, and scholastic integrity at CampusOS.",
+    "id": 0
+  },
+  {
+    "document": "academic_guidelines.md",
+    "title": "CampusOS Academic Guidelines and Student Code (MVP Policy Example)",
+    "section": "Course Registration and Academic Credits",
+    "content": "1. Course Enrollment:\n   - Students register for required core courses and electives offered by their respective academic departments at the beginning of each semester.\n   - Course listings specify course codes, department affiliations, credit units, prerequisites, and assigned faculty instructors.\n2. Add/Drop Period:\n   - Students may adjust course schedules during the designated add/drop registration window without academic penalty.\n3. Credit Load:\n   - Full-time students must maintain the prescribed minimum credit hours per semester according to their program curriculum.",
+    "id": 1
+  },
+  {
+    "document": "academic_guidelines.md",
+    "title": "CampusOS Academic Guidelines and Student Code (MVP Policy Example)",
+    "section": "Grading System and CGPA",
+    "content": "- Performance evaluation includes continuous assessments, mid-term examinations, and final semester evaluations.\n- Cumulative Grade Point Average (CGPA) is computed based on weighted credit grades across all completed academic semesters.\n- Students must maintain satisfactory academic standing according to departmental standards.",
+    "id": 2
+  },
+  {
+    "document": "academic_guidelines.md",
+    "title": "CampusOS Academic Guidelines and Student Code (MVP Policy Example)",
+    "section": "Scholastic Honesty and Code of Conduct",
+    "content": "- Plagiarism, unauthorized examination collaboration, and fraudulent submission of academic work are serious violations.\n- Violations are subject to disciplinary review and penalties ranging from assignment failure to course debarment.",
+    "id": 3
+  },
+  {
+    "document": "attendance_policy.md",
+    "title": "CampusOS Attendance Policy (MVP Policy Example)",
+    "section": "Overview",
+    "content": "Regular attendance in scheduled academic sessions is essential for student learning and academic performance across all departments.",
+    "id": 4
+  },
+  {
+    "document": "attendance_policy.md",
+    "title": "CampusOS Attendance Policy (MVP Policy Example)",
+    "section": "Attendance Requirement",
+    "content": "1. Minimum Requirement: Students are required to maintain a minimum attendance threshold of 75% in each registered course to be eligible for end-semester examinations.\n2. Attendance Status Classification:\n   - Good Standing: Attendance percentage at or above 75%.\n   - Warning Status: Attendance percentage between 65% and 74%.\n   - Critical Status: Attendance percentage below 65%.\n3. Debarment: Students falling below 75% without authorized condonation may be debarred from taking final examinations.",
+    "id": 5
+  },
+  {
+    "document": "attendance_policy.md",
+    "title": "CampusOS Attendance Policy (MVP Policy Example)",
+    "section": "Recording and Tracking Attendance",
+    "content": "- Faculty members record attendance for each course session through the CampusOS Attendance module.\n- Students can view their attendance logs, current percentage, and required classes needed to reach 75% on their student dashboard.\n- Attendance records cannot be marked or modified directly by students.",
+    "id": 6
+  },
+  {
+    "document": "attendance_policy.md",
+    "title": "CampusOS Attendance Policy (MVP Policy Example)",
+    "section": "Medical and Authorized Absence Condonation",
+    "content": "- In exceptional circumstances such as documented illness or university-approved event participation, attendance condonation may be granted down to 65% upon timely submission of official medical or event certificates to the department.",
+    "id": 7
+  },
+  {
+    "document": "campusfix_policy.md",
+    "title": "CampusOS CampusFix Issue Reporting Policy (MVP Policy Example)",
+    "section": "Overview",
+    "content": "CampusFix is the centralized university complaint and facility issue resolution system designed to maintain campus infrastructure and student amenities.",
+    "id": 8
+  },
+  {
+    "document": "campusfix_policy.md",
+    "title": "CampusOS CampusFix Issue Reporting Policy (MVP Policy Example)",
+    "section": "Procedure for Reporting Issues",
+    "content": "1. Submission: Students and campus members can lodge maintenance and facility complaints through the CampusFix portal on the CampusOS dashboard.\n2. Complaint Categories:\n   - Maintenance: Structural repairs, plumbing, furniture, and general campus facilities.\n   - Electrical: Lighting, power outlets, circuit breakers, and laboratory power fixtures.\n   - IT: Wi-Fi connectivity, lab workstations, network access points, and system errors.\n   - Other: General campus amenities and custodial services.\n3. Priority Levels:\n   - Issues can be designated with urgency levels: Low, Medium, High, or Urgent.",
+    "id": 9
+  },
+  {
+    "document": "campusfix_policy.md",
+    "title": "CampusOS CampusFix Issue Reporting Policy (MVP Policy Example)",
+    "section": "Complaint Resolution Workflow",
+    "content": "- Open: The complaint has been registered and is pending initial review by campus facility staff.\n- In Progress: A maintenance technician or IT personnel has been assigned and work is actively underway.\n- Resolved: Corrective actions have been completed and verified.\n- Status Notifications: The reporting user receives real-time notifications in their CampusOS Notification Center whenever the complaint status transitions.",
+    "id": 10
+  },
+  {
+    "document": "events_clubs_policy.md",
+    "title": "CampusOS Events and Clubs Policy (MVP Policy Example)",
+    "section": "Overview",
+    "content": "Campus events and student organizations foster community engagement, leadership development, and extracurricular learning.",
+    "id": 11
+  },
+  {
+    "document": "events_clubs_policy.md",
+    "title": "CampusOS Events and Clubs Policy (MVP Policy Example)",
+    "section": "Campus Event Registration Procedure",
+    "content": "1. Browsing Events: Upcoming workshops, hackathons, guest lectures, and cultural fests are cataloged in the CampusOS Events section.\n2. Registering:\n   - Any registered student can sign up for an active event with available seats.\n   - Upon successful registration, the student receives an event confirmation and ticket record.\n   - If unable to attend, students can unregister prior to the event start time to free up seating.\n3. Event Creation: Authorized faculty and club administrators can create and manage event details, capacity, venue, and timings.",
+    "id": 12
+  },
+  {
+    "document": "events_clubs_policy.md",
+    "title": "CampusOS Events and Clubs Policy (MVP Policy Example)",
+    "section": "Student Clubs and Societies",
+    "content": "1. Membership:\n   - Students may explore technical societies, arts collectives, and student clubs via the Clubs directory.\n   - Joining a club adds the student to the active membership roster.\n   - A student can leave a club at any time from their club membership dashboard.\n2. Club Governance:\n   - Official club creation requires authorization from campus administration or faculty advisors.\n   - All student members are expected to uphold the university student code of conduct during club operations.",
+    "id": 13
+  },
+  {
+    "document": "internship_policy.md",
+    "title": "CampusOS Internship and Career Policy (MVP Policy Example)",
+    "section": "Overview",
+    "content": "The CampusOS Internship & Career module connects undergraduate and graduate students with verified professional opportunities and industrial training.",
+    "id": 14
+  },
+  {
+    "document": "internship_policy.md",
+    "title": "CampusOS Internship and Career Policy (MVP Policy Example)",
+    "section": "Internship Eligibility and Application Rules",
+    "content": "1. Eligibility: Students in eligible academic terms with active student status can explore and apply for internship postings.\n2. Skill Matching System:\n   - Internship listings define required technical and professional skills (such as Python, SQL, React, Machine Learning, Fastapi).\n   - CampusOS computes an explainable skill match percentage comparing the student's acquired skills with the posting requirements.\n   - Students can review their matching skills and missing skills before applying.\n3. Application Process:\n   - Applications are submitted through the CampusOS Internship portal.\n   - Applicants provide their portfolio link, resume URL, and statement of interest.\n   - Duplicate applications for the same opening are strictly prohibited.\n   - Students can monitor their application history and status from the My Applications dashboard.",
+    "id": 15
+  },
+  {
+    "document": "internship_policy.md",
+    "title": "CampusOS Internship and Career Policy (MVP Policy Example)",
+    "section": "Career Conduct and Reporting",
+    "content": "- Students who receive an official internship offer must notify the Career and Placement cell and verify that work hours do not conflict with mandatory class schedules.",
+    "id": 16
+  }
+]
