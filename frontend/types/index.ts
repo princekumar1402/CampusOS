@@ -340,3 +340,19 @@ export interface AssistantAnswerResponse {
   sources: AssistantSource[];
 }
 
+// ---------------------------------------------------------------------------
+// Admin Dashboard & Overview (Day 7 MVP)
+// ---------------------------------------------------------------------------
+
+export interface AdminStatsResponse {
+  students: number;
+  faculty: number;
+  courses: number;
+  events: number;
+  clubs: number;
+  complaints: number;
+  open_complaints: number;
+  internships: number;
+  applications: number;
+}
+

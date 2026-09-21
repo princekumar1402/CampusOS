@@ -17,4 +17,5 @@ export * from "./complaints";
 export * from "./events-clubs";
 export * from "./internships";
 export * from "./assistant";
+export * from "./admin";
 

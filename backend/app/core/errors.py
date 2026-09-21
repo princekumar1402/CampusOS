@@ -110,8 +110,14 @@ async def campusOS_error_handler(request: Request, exc: CampusOSError) -> ORJSON
     )
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 async def unhandled_error_handler(request: Request, exc: Exception) -> ORJSONResponse:
     """Catch-all for any unexpected exceptions — prevents stack traces leaking to clients."""
+    logger.exception("Unhandled error processing request %s: %s", request.url, exc)
     return _error_response(
         error_code="InternalError",
         message="An unexpected error occurred. Please try again later.",

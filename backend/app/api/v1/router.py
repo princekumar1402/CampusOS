@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
+    admin,
     applications,
     assistant,
     attendance,
@@ -39,6 +40,7 @@ router.include_router(notifications.router)
 router.include_router(internships.router)
 router.include_router(applications.router)
 router.include_router(assistant.router)
+router.include_router(admin.router)
 
 
 # Future domain routers will be added here, for example:

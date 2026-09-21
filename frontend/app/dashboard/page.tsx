@@ -319,6 +319,27 @@ export default function DashboardPage() {
                 <span>→</span>
               </div>
             </Link>
+
+            {user.role === "ADMIN" && (
+              <Link
+                href="/dashboard/admin"
+                className="p-6 bg-slate-900/70 border border-slate-800 hover:border-rose-500/50 rounded-2xl transition-all shadow-lg group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                  🛡️
+                </div>
+                <h3 className="text-lg font-bold text-white group-hover:text-rose-300 transition-colors">
+                  Admin Dashboard
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  System-wide statistics, active complaints & campus metrics.
+                </p>
+                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-rose-400 font-medium">
+                  <span>System Overview</span>
+                  <span>→</span>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>

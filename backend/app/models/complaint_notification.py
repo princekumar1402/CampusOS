@@ -70,7 +70,7 @@ class Complaint(Base):
         DateTime(timezone=True),
         nullable=False,
         server_default=func.now(),
-        onupdate=func.now,
+        onupdate=func.now(),
     )
 
     # Relationships

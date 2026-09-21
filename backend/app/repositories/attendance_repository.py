@@ -13,6 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.models.academic import FacultyProfile
 from app.models.attendance import AttendanceRecord, AttendanceStatus, Course
 
 
@@ -26,7 +27,8 @@ class CourseRepository:
             select(Course)
             .options(
                 selectinload(Course.department),
-                selectinload(Course.faculty),
+                selectinload(Course.faculty).selectinload(FacultyProfile.user),
+                selectinload(Course.faculty).selectinload(FacultyProfile.department),
             )
             .where(Course.id == course_id)
         )
@@ -36,7 +38,15 @@ class CourseRepository:
     async def get_by_code(self, db: AsyncSession, code: str) -> Course | None:
         """Fetch course by code (e.g. 'CS101')."""
         normalized_code = code.strip().upper()
-        stmt = select(Course).where(Course.code == normalized_code)
+        stmt = (
+            select(Course)
+            .options(
+                selectinload(Course.department),
+                selectinload(Course.faculty).selectinload(FacultyProfile.user),
+                selectinload(Course.faculty).selectinload(FacultyProfile.department),
+            )
+            .where(Course.code == normalized_code)
+        )
         result = await db.execute(stmt)
         return result.scalar_one_or_none()
 
@@ -46,7 +56,8 @@ class CourseRepository:
             select(Course)
             .options(
                 selectinload(Course.department),
-                selectinload(Course.faculty),
+                selectinload(Course.faculty).selectinload(FacultyProfile.user),
+                selectinload(Course.faculty).selectinload(FacultyProfile.department),
             )
             .order_by(Course.code)
         )
@@ -116,7 +127,11 @@ class AttendanceRepository:
         # Reload with relationships loaded for serialization
         stmt = (
             select(AttendanceRecord)
-            .options(selectinload(AttendanceRecord.course))
+            .options(
+                selectinload(AttendanceRecord.course).selectinload(Course.department),
+                selectinload(AttendanceRecord.course).selectinload(Course.faculty).selectinload(FacultyProfile.user),
+                selectinload(AttendanceRecord.course).selectinload(Course.faculty).selectinload(FacultyProfile.department),
+            )
             .where(AttendanceRecord.id == record.id)
         )
         res = await db.execute(stmt)
@@ -133,6 +148,8 @@ class AttendanceRepository:
             select(AttendanceRecord)
             .options(
                 selectinload(AttendanceRecord.course).selectinload(Course.department),
+                selectinload(AttendanceRecord.course).selectinload(Course.faculty).selectinload(FacultyProfile.user),
+                selectinload(AttendanceRecord.course).selectinload(Course.faculty).selectinload(FacultyProfile.department),
             )
             .where(AttendanceRecord.student_profile_id == student_profile_id)
             .order_by(AttendanceRecord.date.desc(), AttendanceRecord.created_at.desc())
@@ -150,7 +167,9 @@ class AttendanceRepository:
         stmt = (
             select(AttendanceRecord)
             .options(
-                selectinload(AttendanceRecord.course),
+                selectinload(AttendanceRecord.course).selectinload(Course.department),
+                selectinload(AttendanceRecord.course).selectinload(Course.faculty).selectinload(FacultyProfile.user),
+                selectinload(AttendanceRecord.course).selectinload(Course.faculty).selectinload(FacultyProfile.department),
                 selectinload(AttendanceRecord.student_profile).selectinload(
                     AttendanceRecord.student_profile.property.mapper.class_.user
                 ),

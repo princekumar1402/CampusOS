@@ -51,7 +51,7 @@ class Department(Base):
     updated_at: Mapped[datetime] = mapped_column(
         nullable=False,
         server_default=func.now(),
-        onupdate=func.now,
+        onupdate=func.now(),
     )
 
     # Relationships
@@ -118,7 +118,7 @@ class StudentProfile(Base):
     updated_at: Mapped[datetime] = mapped_column(
         nullable=False,
         server_default=func.now(),
-        onupdate=func.now,
+        onupdate=func.now(),
     )
 
     # Relationships
@@ -177,7 +177,7 @@ class FacultyProfile(Base):
     updated_at: Mapped[datetime] = mapped_column(
         nullable=False,
         server_default=func.now(),
-        onupdate=func.now,
+        onupdate=func.now(),
     )
 
     # Relationships
