@@ -1,12 +1,6 @@
-/**
- * CampusOS — Button Component
- *
- * Reusable button with variants, sizes, and loading state.
- * Part of the base UI component library.
- */
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "outline" | "ghost" | "danger" | "teal";
 type Size = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,18 +11,23 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30",
+    "bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-sm transition-colors",
   secondary:
-    "bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 hover:border-white/20",
-  ghost: "hover:bg-white/5 text-slate-400 hover:text-slate-200",
+    "bg-muted hover:bg-muted/80 text-foreground font-medium border border-border transition-colors",
+  outline:
+    "bg-transparent hover:bg-muted text-foreground font-medium border border-border transition-colors",
+  ghost:
+    "hover:bg-muted text-muted-foreground hover:text-foreground font-medium transition-colors",
   danger:
-    "bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/20",
+    "bg-red-600 hover:bg-red-700 text-white font-semibold shadow-sm transition-colors",
+  teal:
+    "bg-[#0f766e] hover:bg-[#0d655e] text-white font-semibold shadow-sm transition-colors",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "px-3 py-1.5 text-sm rounded-lg",
-  md: "px-4 py-2 text-sm rounded-xl",
-  lg: "px-6 py-3 text-base rounded-xl",
+  sm: "px-2.5 py-1 text-xs rounded-md",
+  md: "px-3.5 py-1.5 text-xs rounded-md",
+  lg: "px-5 py-2.5 text-sm rounded-lg",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -49,10 +48,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={[
-          "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050816]",
+          "inline-flex items-center justify-center gap-1.5 transition-all outline-none select-none cursor-pointer",
           "disabled:opacity-50 disabled:cursor-not-allowed",
-          "hover:-translate-y-0.5 active:translate-y-0",
           variantClasses[variant],
           sizeClasses[size],
           className,
@@ -61,7 +58,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading && (
           <svg
-            className="animate-spin h-4 w-4"
+            className="animate-spin h-3.5 w-3.5"
             fill="none"
             viewBox="0 0 24 24"
           >

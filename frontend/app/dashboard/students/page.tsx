@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import {
   fetchDepartments,
   fetchMyStudentProfile,
@@ -11,6 +12,7 @@ import {
   updateMyStudentProfile,
 } from "@/services/academic";
 import type { Department, StudentProfile } from "@/types";
+import { Users, GraduationCap, Edit, CheckCircle2 } from "lucide-react";
 
 export default function StudentsPage() {
   const { user, isLoading } = useAuth();
@@ -108,10 +110,10 @@ export default function StudentsPage() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading student directory...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading student directory...</span>
         </div>
       </div>
     );
@@ -120,231 +122,218 @@ export default function StudentsPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-        {/* Header Navigation */}
-        <header className="flex justify-between items-center bg-slate-900/60 backdrop-blur-xl border border-slate-800 p-4 px-6 rounded-2xl">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 font-bold flex items-center justify-center hover:scale-105 transition-transform">
-              COS
-            </Link>
-            <div>
-              <h1 className="font-semibold text-white tracking-wide">Student Profiles & Directory</h1>
-              <p className="text-xs text-slate-400">Campus Student Management</p>
-            </div>
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
+          <div>
+            <div className="eyebrow">Academic Records</div>
+            <h1>Student Directory &amp; Profiles</h1>
+            <p>
+              Academic rosters, program enrollments, and student cohorts · IIIT Kottayam
+            </p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-sm font-medium border border-slate-700 transition-all"
-            >
-              ← Back to Dashboard
-            </Link>
-          </div>
-        </header>
+        </div>
 
         {error && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-sm flex items-center gap-2">
-            <span>⚠️</span>
+          <div className="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 rounded-md text-red-600 dark:text-red-400 text-xs flex items-center justify-between font-medium">
             <span>{error}</span>
+            <button onClick={() => setError(null)} className="cursor-pointer">✕</button>
           </div>
         )}
 
         {saveSuccess && (
-          <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-sm flex items-center gap-2">
-            <span>✅</span>
+          <div className="p-3.5 mb-4 bg-emerald-500/10 border border-emerald-500/30 rounded-md text-emerald-700 dark:text-emerald-400 text-xs flex items-center justify-between font-medium">
             <span>{saveSuccess}</span>
+            <button onClick={() => setSaveSuccess(null)} className="cursor-pointer">✕</button>
           </div>
         )}
 
-        {/* My Student Profile Card / Edit Section */}
-        <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl">
-          <div className="flex justify-between items-center pb-4 border-b border-slate-800">
-            <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <span>🎓</span>
-                <span>My Student Profile</span>
-              </h2>
-              <p className="text-xs text-slate-400">Manage your personal academic profile</p>
+        {/* My Student Profile Card / Edit Section (Only shown if user is student) */}
+        {user.role === "STUDENT" && (
+          <div className="p-5 mb-6 bg-[var(--card)] border border-[var(--border)] rounded-[9px] shadow-sm space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-[var(--border)]">
+              <div>
+                <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-blue-600" />
+                  <span>My Student Profile</span>
+                </h2>
+                <p className="text-xs text-muted-foreground">Manage your personal academic profile</p>
+              </div>
+
+              <button
+                onClick={() => setIsEditingMyProfile(!isEditingMyProfile)}
+                className="px-3 py-1 bg-muted hover:bg-muted/80 text-foreground border border-[var(--border)] rounded-md text-xs font-semibold transition-colors cursor-pointer"
+              >
+                {isEditingMyProfile ? "Cancel Editing" : myProfile ? "Edit Profile" : "+ Create My Profile"}
+              </button>
             </div>
 
-            <button
-              onClick={() => setIsEditingMyProfile(!isEditingMyProfile)}
-              className="px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-xl text-xs font-semibold transition-all"
-            >
-              {isEditingMyProfile ? "Cancel Editing" : myProfile ? "Edit Profile" : "+ Create My Profile"}
-            </button>
+            {isEditingMyProfile ? (
+              <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    Student Roll / ID *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 2026BCS001"
+                    value={studentIdInput}
+                    onChange={(e) => setStudentIdInput(e.target.value)}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    Department
+                  </label>
+                  <select
+                    value={departmentIdInput}
+                    onChange={(e) => setDepartmentIdInput(e.target.value)}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.code} — {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    Program / Degree *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="B.Tech Computer Science"
+                    value={programInput}
+                    onChange={(e) => setProgramInput(e.target.value)}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    Batch Year *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={batchYearInput}
+                    onChange={(e) => setBatchYearInput(Number(e.target.value))}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    CGPA (0.00 - 10.00)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="10"
+                    placeholder="8.50"
+                    value={cgpaInput}
+                    onChange={(e) => setCgpaInput(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="+91 98765 43210"
+                    value={phoneInput}
+                    onChange={(e) => setPhoneInput(e.target.value)}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
+                    Bio / Technical Interests
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="Passionate about systems programming, machine learning, and web engineering..."
+                    value={bioInput}
+                    onChange={(e) => setBioInput(e.target.value)}
+                    className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="md:col-span-2 flex justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingMyProfile(false)}
+                    className="px-3.5 py-1.5 bg-muted text-muted-foreground hover:text-foreground rounded-md text-xs font-medium transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {isSaving ? "Saving..." : "Save Profile"}
+                  </button>
+                </div>
+              </form>
+            ) : myProfile ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1 text-xs">
+                <div className="p-3 bg-[var(--muted)] rounded-md border border-[var(--border)]">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block mb-0.5">Roll ID</span>
+                  <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">{myProfile.student_id}</span>
+                </div>
+
+                <div className="p-3 bg-[var(--muted)] rounded-md border border-[var(--border)]">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block mb-0.5">Program &amp; Batch</span>
+                  <span className="text-foreground font-medium">{myProfile.program} ({myProfile.batch_year})</span>
+                </div>
+
+                <div className="p-3 bg-[var(--muted)] rounded-md border border-[var(--border)]">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block mb-0.5">Department</span>
+                  <span className="text-foreground font-medium">
+                    {myProfile.department ? `${myProfile.department.code} - ${myProfile.department.name}` : "Unassigned"}
+                  </span>
+                </div>
+
+                <div className="p-3 bg-[var(--muted)] rounded-md border border-[var(--border)]">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block mb-0.5">CGPA</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{myProfile.cgpa ? myProfile.cgpa.toFixed(2) : "N/A"}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 text-center text-muted-foreground text-xs">
+                You have not created your student profile yet. Click &quot;Create My Profile&quot; to configure your batch and roll ID.
+              </div>
+            )}
           </div>
-
-          {isEditingMyProfile ? (
-            <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Student Roll / ID
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="STU-2026-001"
-                  value={studentIdInput}
-                  onChange={(e) => setStudentIdInput(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Department
-                </label>
-                <select
-                  value={departmentIdInput}
-                  onChange={(e) => setDepartmentIdInput(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                >
-                  <option value="">Select Department</option>
-                  {departments.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.code} — {d.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Program / Degree
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="B.Tech Computer Science"
-                  value={programInput}
-                  onChange={(e) => setProgramInput(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Batch Year
-                </label>
-                <input
-                  type="number"
-                  required
-                  value={batchYearInput}
-                  onChange={(e) => setBatchYearInput(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  CGPA (0.00 - 10.00)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="10"
-                  placeholder="3.85"
-                  value={cgpaInput}
-                  onChange={(e) => setCgpaInput(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  placeholder="+1 (555) 019-2834"
-                  value={phoneInput}
-                  onChange={(e) => setPhoneInput(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Bio / Interests
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="Tell campus peers about your technical interests..."
-                  value={bioInput}
-                  onChange={(e) => setBioInput(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm"
-                />
-              </div>
-
-              <div className="md:col-span-2 flex justify-end gap-3 mt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsEditingMyProfile(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-indigo-500/25"
-                >
-                  {isSaving ? "Saving..." : "Save Profile"}
-                </button>
-              </div>
-            </form>
-          ) : myProfile ? (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 text-xs">
-              <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-                <span className="text-slate-500 uppercase font-semibold block mb-1">Student Roll ID</span>
-                <span className="font-mono text-indigo-400 font-bold">{myProfile.student_id}</span>
-              </div>
-
-              <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-                <span className="text-slate-500 uppercase font-semibold block mb-1">Program & Batch</span>
-                <span className="text-white font-medium">{myProfile.program} ({myProfile.batch_year})</span>
-              </div>
-
-              <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-                <span className="text-slate-500 uppercase font-semibold block mb-1">Department</span>
-                <span className="text-purple-300 font-medium">
-                  {myProfile.department ? `${myProfile.department.code} - ${myProfile.department.name}` : "Unassigned"}
-                </span>
-              </div>
-
-              <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-                <span className="text-slate-500 uppercase font-semibold block mb-1">CGPA</span>
-                <span className="text-emerald-400 font-bold">{myProfile.cgpa ? myProfile.cgpa.toFixed(2) : "N/A"}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="p-6 text-center text-slate-400 text-sm">
-              You haven&apos;t created your student profile yet. Click &quot;Create My Profile&quot; above to get started.
-            </div>
-          )}
-        </div>
+        )}
 
         {/* Directory Search & List */}
-        <div className="space-y-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              Student Directory ({students.length})
+        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <h2 className="text-sm font-bold text-foreground">
+              Enrolled Students ({students.length})
             </h2>
 
             {/* Department Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400">Filter Department:</span>
+              <span className="text-xs text-muted-foreground">Filter:</span>
               <select
                 value={selectedDeptFilter}
                 onChange={(e) => setSelectedDeptFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white"
+                className="px-2.5 py-1 bg-[var(--card)] border border-[var(--border)] rounded-md text-xs text-foreground focus:outline-none"
               >
                 <option value="">All Departments</option>
                 {departments.map((d) => (
@@ -357,58 +346,60 @@ export default function StudentsPage() {
           </div>
 
           {students.length === 0 ? (
-            <div className="p-8 bg-slate-900/40 border border-slate-800 rounded-2xl text-center text-slate-400">
-              No student profiles found for the selected criteria.
+            <div className="p-12 bg-[var(--card)] border border-[var(--border)] rounded-[9px] text-center text-xs text-muted-foreground">
+              No student profiles found for the selected department.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {students.map((st) => (
                 <div
                   key={st.id}
-                  className="p-6 bg-slate-900/70 border border-slate-800 rounded-2xl transition-all shadow-lg flex flex-col justify-between"
+                  className="p-5 bg-[var(--card)] border border-[var(--border)] rounded-[9px] shadow-sm flex flex-col justify-between transition-all hover:border-blue-500/40"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-lg text-xs font-mono font-bold">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="status-badge blue font-mono font-bold">
                         {st.student_id}
                       </span>
                       {st.department && (
-                        <span className="px-2 py-0.5 bg-purple-500/10 text-purple-300 rounded text-[10px] font-bold">
+                        <span className="status-badge slate">
                           {st.department.code}
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-base font-bold text-white">
-                      {st.user.full_name}
-                    </h3>
-                    <p className="text-xs text-slate-400 mt-0.5">{st.user.email}</p>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground">
+                        {st.user.full_name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">{st.user.email}</p>
+                    </div>
 
-                    <div className="mt-3 space-y-1 text-xs text-slate-300">
-                      <div><strong className="text-slate-500">Program:</strong> {st.program}</div>
-                      <div><strong className="text-slate-500">Batch:</strong> Class of {st.batch_year}</div>
+                    <div className="pt-1 space-y-0.5 text-xs text-muted-foreground">
+                      <div><strong className="text-foreground">Program:</strong> {st.program}</div>
+                      <div><strong className="text-foreground">Batch:</strong> Class of {st.batch_year}</div>
                       {st.cgpa && (
-                        <div><strong className="text-slate-500">CGPA:</strong> <span className="text-emerald-400 font-semibold">{st.cgpa.toFixed(2)}</span></div>
+                        <div><strong className="text-foreground">CGPA:</strong> <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{st.cgpa.toFixed(2)}</span></div>
                       )}
                     </div>
 
                     {st.bio && (
-                      <p className="text-xs text-slate-400 italic mt-3 line-clamp-2">
+                      <p className="text-xs text-muted-foreground italic pt-1 line-clamp-2">
                         &quot;{st.bio}&quot;
                       </p>
                     )}
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
-                    <span>Registered Student</span>
-                    <span className="text-indigo-400">Verified</span>
+                  <div className="mt-4 pt-3 border-t border-[var(--border)] text-[10px] text-muted-foreground flex justify-between">
+                    <span>IIIT Kottayam Student</span>
+                    <span className="text-blue-600 font-medium">Active</span>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

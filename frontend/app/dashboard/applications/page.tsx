@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import { fetchMyApplications } from "@/services/internships";
 import type { InternshipApplication } from "@/types";
+import { FileText, ArrowUpRight, Calendar, Building2 } from "lucide-react";
 
 export default function ApplicationsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -41,197 +43,137 @@ export default function ApplicationsPage() {
     }
   }, [user]);
 
-  return (
-    <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto" }}>
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-          borderBottom: "1px solid #e2e8f0",
-          paddingBottom: "1.5rem",
-        }}
-      >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <Link
-              href="/dashboard/internships"
-              style={{
-                fontSize: "0.875rem",
-                color: "#64748b",
-                textDecoration: "none",
-              }}
-            >
-              ← Back to Internships
-            </Link>
-          </div>
-          <h1
-            style={{
-              fontSize: "1.875rem",
-              fontWeight: 700,
-              color: "#0f172a",
-              marginTop: "0.25rem",
-            }}
-          >
-            My Internship Applications
-          </h1>
-          <p style={{ color: "#64748b", fontSize: "0.95rem", marginTop: "0.25rem" }}>
-            Track the status of all opportunities you have applied to.
-          </p>
-        </div>
+  const getStatusTone = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "SELECTED":
+        return "green";
+      case "REVIEWED":
+        return "blue";
+      case "REJECTED":
+        return "red";
+      case "APPLIED":
+      default:
+        return "amber";
+    }
+  };
 
-        <Link
-          href="/dashboard/internships"
-          style={{
-            padding: "0.625rem 1.25rem",
-            borderRadius: "0.5rem",
-            background: "#2563eb",
-            color: "#ffffff",
-            fontWeight: 600,
-            fontSize: "0.875rem",
-            textDecoration: "none",
-          }}
-        >
-          Browse Openings
-        </Link>
+  if (authLoading || (!user && loading)) {
+    return (
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading applications...</span>
+        </div>
       </div>
+    );
+  }
 
-      {/* Error Alert */}
-      {error && (
-        <div
-          id="error-alert"
-          style={{
-            padding: "1rem",
-            borderRadius: "0.5rem",
-            background: "#fef2f2",
-            color: "#991b1b",
-            border: "1px solid #f87171",
-            marginBottom: "1.5rem",
-            fontSize: "0.9rem",
-          }}
-        >
-          {error}
-        </div>
-      )}
+  return (
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
+          <div>
+            <div className="eyebrow">Career Services · Tracking</div>
+            <h1>My Internship Applications</h1>
+            <p>
+              Track submissions, review stages, and placement outcomes · IIIT Kottayam
+            </p>
+          </div>
 
-      {/* Content */}
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>
-          <p>Loading your submitted applications...</p>
-        </div>
-      ) : applications.length === 0 ? (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "3.5rem 1.5rem",
-            background: "#f8fafc",
-            borderRadius: "0.75rem",
-            border: "1px dashed #cbd5e1",
-          }}
-        >
-          <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>📄</div>
-          <h3 style={{ fontSize: "1.125rem", fontWeight: 600, color: "#1e293b" }}>
-            No Applications Submitted Yet
-          </h3>
-          <p style={{ color: "#64748b", marginTop: "0.25rem", fontSize: "0.9rem" }}>
-            Explore available opportunities and submit your profile to get started.
-          </p>
           <Link
             href="/dashboard/internships"
-            style={{
-              display: "inline-block",
-              marginTop: "1rem",
-              padding: "0.5rem 1rem",
-              borderRadius: "0.375rem",
-              background: "#2563eb",
-              color: "#ffffff",
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
+            className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            Explore Internships
+            <span>Browse More Openings</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          {applications.map((app) => (
-            <div
-              key={app.id}
-              className="application-card"
-              style={{
-                background: "#ffffff",
-                borderRadius: "0.75rem",
-                border: "1px solid #e2e8f0",
-                padding: "1.25rem 1.5rem",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: "1rem",
-                boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
-              }}
-            >
-              <div>
-                <h3
-                  style={{
-                    fontSize: "1.125rem",
-                    fontWeight: 700,
-                    color: "#0f172a",
-                    marginBottom: "0.2rem",
-                  }}
-                >
-                  {app.internship?.title || "Internship Opportunity"}
-                </h3>
-                <div
-                  style={{
-                    fontSize: "0.95rem",
-                    fontWeight: 600,
-                    color: "#2563eb",
-                    marginBottom: "0.4rem",
-                  }}
-                >
-                  {app.internship?.company || "Company"}
-                </div>
-                <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                  Applied: {new Date(app.applied_at).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </div>
-              </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <span
-                  className="application-status-badge"
-                  style={{
-                    fontSize: "0.8rem",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    padding: "0.35rem 0.75rem",
-                    borderRadius: "9999px",
-                    background: "#eff6ff",
-                    color: "#1d4ed8",
-                    border: "1px solid #bfdbfe",
-                  }}
-                >
-                  {app.status}
-                </span>
-              </div>
+        {/* Error Alert */}
+        {error && (
+          <div
+            id="error-alert"
+            className="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 rounded-md text-xs flex items-center justify-between font-medium"
+          >
+            <span>{error}</span>
+            <button onClick={() => setError(null)} className="text-red-600 dark:text-red-400 cursor-pointer">
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* Content */}
+        {loading ? (
+          <div className="p-12 text-center text-muted-foreground text-xs">
+            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            Loading your submitted applications...
+          </div>
+        ) : applications.length === 0 ? (
+          <div className="p-12 bg-[var(--card)] border border-[var(--border)] rounded-[9px] text-center space-y-2">
+            <div className="text-3xl mb-1">📄</div>
+            <h3 className="text-sm font-semibold text-foreground">No Applications Submitted Yet</h3>
+            <p className="text-xs text-muted-foreground">
+              Explore available opportunities and submit your profile to get started.
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/dashboard/internships"
+                className="inline-block px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition-colors"
+              >
+                Explore Internships
+              </Link>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {applications.map((app) => {
+              const tone = getStatusTone(app.status);
+              return (
+                <div
+                  key={app.id}
+                  className="p-5 bg-[var(--card)] border border-[var(--border)] rounded-[9px] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:border-blue-500/40"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-foreground">
+                        {app.internship?.title || "Internship Opportunity"}
+                      </h3>
+                      <span className={`status-badge ${tone}`}>
+                        {app.status}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 font-medium">
+                      <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                      <span>{app.internship?.company || "Company Partner"}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1 text-[11px] text-muted-foreground pt-1">
+                      <Calendar className="w-3 h-3" />
+                      <span>
+                        Applied on {new Date(app.applied_at).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Link
+                      href="/dashboard/internships"
+                      className="px-3 py-1 bg-muted hover:bg-muted/80 text-foreground border border-[var(--border)] rounded-md text-xs font-medium transition-colors"
+                    >
+                      View Posting
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </main>
+    </AppShell>
   );
 }

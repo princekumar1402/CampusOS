@@ -4,8 +4,22 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import { fetchAdminStats } from "@/services/admin";
 import type { AdminStatsResponse } from "@/types";
+import {
+  ShieldAlert,
+  Users,
+  GraduationCap,
+  BookOpen,
+  CalendarDays,
+  Wrench,
+  BriefcaseBusiness,
+  FileText,
+  RotateCcw,
+  ArrowRight,
+  ShieldCheck,
+} from "lucide-react";
 
 export default function AdminDashboardPage() {
   const { user, isLoading } = useAuth();
@@ -45,287 +59,149 @@ export default function AdminDashboardPage() {
     }
   }, [user]);
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading admin session...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading admin session...</span>
         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   // Role Gate: Only ADMIN users may view administrative statistics
   if (user.role !== "ADMIN") {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 flex items-center justify-center">
-        <div className="max-w-md w-full bg-slate-900/90 border border-rose-500/30 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center text-3xl mx-auto">
-            🚫
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white">Access Restricted</h1>
-            <p className="text-xs text-slate-400 mt-2">
-              Administrator privileges are required to view the Admin Dashboard and system metrics.
-            </p>
-            <div className="mt-4 inline-block px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
-              Current Role: <span className="text-rose-400">{user.role}</span>
+      <AppShell>
+        <main className="dashboard flex items-center justify-center min-h-[70vh]">
+          <div className="max-w-md w-full bg-[var(--card)] border border-red-500/30 rounded-[9px] p-8 text-center space-y-5 shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
+              <ShieldAlert className="w-6 h-6" />
             </div>
+            <div>
+              <h1 className="text-base font-bold text-foreground">Access Restricted</h1>
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                Administrator privileges are required to view the system metrics and administrative operations.
+              </p>
+              <div className="mt-3 inline-block px-2.5 py-1 rounded text-xs font-semibold bg-muted text-foreground border border-border">
+                Your Role: <span className="text-red-600 dark:text-red-400">{user.role}</span>
+              </div>
+            </div>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors"
+            >
+              Return to Student Dashboard
+            </Link>
           </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold border border-slate-700 transition-all gap-2"
-          >
-            <span>← Return to Student/Faculty Dashboard</span>
-          </Link>
-        </div>
-      </div>
+        </main>
+      </AppShell>
     );
   }
 
+  const metricCards = stats
+    ? [
+        { label: "Students", value: stats.students, detail: "Registered students", icon: GraduationCap, tone: "blue" },
+        { label: "Faculty", value: stats.faculty, detail: "Teaching faculty", icon: Users, tone: "slate" },
+        { label: "Courses", value: stats.courses, detail: "Active catalog", icon: BookOpen, tone: "teal" },
+        { label: "Events", value: stats.events, detail: "Campus activities", icon: CalendarDays, tone: "blue" },
+        { label: "Clubs", value: stats.clubs, detail: "Student organizations", icon: Users, tone: "green" },
+        { label: "CampusFix Issues", value: stats.complaints, detail: `${stats.open_complaints} currently open`, icon: Wrench, tone: stats.open_complaints > 0 ? "amber" : "green" },
+        { label: "Internships", value: stats.internships, detail: "Published listings", icon: BriefcaseBusiness, tone: "teal" },
+        { label: "Applications", value: stats.applications, detail: "Student submissions", icon: FileText, tone: "blue" },
+      ]
+    : [];
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-600/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-        {/* Top Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold flex items-center justify-center text-xl">
-              🛡️
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white tracking-wide">
-                CampusOS Administration
-              </h1>
-              <p className="text-xs text-slate-400">
-                System Overview & Infrastructure Metrics (Day 7 MVP)
-              </p>
-            </div>
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
+          <div>
+            <div className="eyebrow">Institutional Administration</div>
+            <h1>System Statistics &amp; Operations</h1>
+            <p>
+              Indian Institute of Information Technology Kottayam · Production Node
+            </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={loadStats}
-              disabled={loadingStats}
-              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-slate-800 transition-all flex items-center gap-1.5"
-            >
-              <span>🔄</span>
-              <span>Refresh Stats</span>
-            </button>
-
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-slate-800 transition-all flex items-center gap-2"
-            >
-              <span>←</span>
-              <span>Main Dashboard</span>
-            </Link>
-          </div>
+          <button
+            onClick={loadStats}
+            disabled={loadingStats}
+            className="px-3.5 py-2 bg-muted hover:bg-muted/80 text-foreground border border-[var(--border)] rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${loadingStats ? "animate-spin" : ""}`} />
+            <span>Refresh Stats</span>
+          </button>
         </div>
 
         {/* Error Alert */}
         {errorMessage && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-rose-300 text-sm flex items-start gap-3">
-            <span className="text-lg">⚠️</span>
-            <div className="space-y-1">
-              <p className="font-semibold">Unable to load metrics</p>
-              <p className="text-xs text-rose-400">{errorMessage}</p>
-            </div>
+          <div className="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 rounded-md text-red-600 dark:text-red-400 text-xs flex items-center gap-2 font-medium">
+            <ShieldAlert className="w-4 h-4 flex-shrink-0" />
+            <span>{errorMessage}</span>
           </div>
         )}
 
         {/* Stats Grid */}
         {loadingStats ? (
-          <div className="p-12 text-center bg-slate-900/60 rounded-3xl border border-slate-800 space-y-3">
-            <div className="w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs text-slate-400">Gathering system-wide database statistics...</p>
+          <div className="p-12 text-center text-muted-foreground text-xs">
+            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            Aggregating institutional metrics...
           </div>
         ) : stats ? (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white tracking-tight">
-                Live CampusOS Metrics
-              </h2>
-              <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full">
-                ● Connected to Live Database
-              </span>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              {metricCards.map((item) => (
+                <div className="stat-card" key={item.label}>
+                  <div className="stat-top">
+                    <span className={`tone-icon ${item.tone}`}>
+                      <item.icon />
+                    </span>
+                    <ShieldCheck className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                  <div className="stat-value">{item.value}</div>
+                  <div className="stat-label">{item.label}</div>
+                  <div className={`stat-detail ${item.tone}`}>{item.detail}</div>
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* Students */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Students</span>
-                  <span className="text-lg">🎓</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.students}</div>
-                <p className="text-[11px] text-slate-500">Registered student users</p>
-              </div>
-
-              {/* Faculty */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Faculty</span>
-                  <span className="text-lg">👩‍🏫</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.faculty}</div>
-                <p className="text-[11px] text-slate-500">Verified instructors & staff</p>
-              </div>
-
-              {/* Courses */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Courses</span>
-                  <span className="text-lg">📚</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.courses}</div>
-                <p className="text-[11px] text-slate-500">Offered academic courses</p>
-              </div>
-
-              {/* Events */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Events</span>
-                  <span className="text-lg">🎟️</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.events}</div>
-                <p className="text-[11px] text-slate-500">Scheduled campus activities</p>
-              </div>
-
-              {/* Clubs */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Clubs & Societies</span>
-                  <span className="text-lg">👥</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.clubs}</div>
-                <p className="text-[11px] text-slate-500">Active student organizations</p>
-              </div>
-
-              {/* Complaints Total */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Complaints Total</span>
-                  <span className="text-lg">🛠️</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.complaints}</div>
-                <p className="text-[11px] text-slate-500">Logged CampusFix issues</p>
-              </div>
-
-              {/* Open Complaints */}
-              <div className="p-5 bg-slate-900/80 border border-amber-500/30 bg-amber-500/5 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-amber-400">
-                  <span>Open Complaints</span>
-                  <span className="text-lg">⚠️</span>
-                </div>
-                <div className="text-2xl font-bold text-amber-300">{stats.open_complaints}</div>
-                <p className="text-[11px] text-amber-400/80">Pending maintenance action</p>
-              </div>
-
-              {/* Internships */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Internships</span>
-                  <span className="text-lg">💼</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.internships}</div>
-                <p className="text-[11px] text-slate-500">Published career openings</p>
-              </div>
-
-              {/* Applications */}
-              <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1 shadow-lg">
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Applications</span>
-                  <span className="text-lg">📝</span>
-                </div>
-                <div className="text-2xl font-bold text-white">{stats.applications}</div>
-                <p className="text-[11px] text-slate-500">Submitted student applications</p>
+            {/* Quick Management Links */}
+            <div className="space-y-3 pt-2">
+              <h2 className="text-sm font-bold text-foreground">
+                Administrative Modules
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {[
+                  { title: "Department Catalog", href: "/dashboard/departments", desc: "Manage academic departments & codes" },
+                  { title: "Student Directory", href: "/dashboard/students", desc: "View student profiles & batch rosters" },
+                  { title: "Faculty Directory", href: "/dashboard/faculty", desc: "View teaching faculty & designations" },
+                  { title: "Attendance Intelligence", href: "/dashboard/attendance", desc: "Take attendance & view thresholds" },
+                  { title: "CampusFix Service Desk", href: "/dashboard/complaints", desc: "Resolve reported facility issues" },
+                  { title: "Internship Programs", href: "/dashboard/internships", desc: "Post and review career placements" },
+                ].map((mod) => (
+                  <Link
+                    key={mod.href}
+                    href={mod.href}
+                    className="p-4 bg-[var(--card)] hover:bg-[var(--muted)] border border-[var(--border)] rounded-[9px] transition-colors flex items-center justify-between group"
+                  >
+                    <div>
+                      <h3 className="text-xs font-bold text-foreground group-hover:text-blue-600 transition-colors">
+                        {mod.title}
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        {mod.desc}
+                      </p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-blue-600 transition-colors" />
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
         ) : null}
-
-        {/* Quick Management Links */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white tracking-tight">
-            Administrative Shortcuts
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Link
-              href="/dashboard/departments"
-              className="p-4 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl transition-all flex items-center justify-between text-xs text-slate-300 hover:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span>🏛️</span>
-                <span>Department Catalog</span>
-              </span>
-              <span>→</span>
-            </Link>
-
-            <Link
-              href="/dashboard/students"
-              className="p-4 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl transition-all flex items-center justify-between text-xs text-slate-300 hover:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span>🎓</span>
-                <span>Student Directory</span>
-              </span>
-              <span>→</span>
-            </Link>
-
-            <Link
-              href="/dashboard/faculty"
-              className="p-4 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl transition-all flex items-center justify-between text-xs text-slate-300 hover:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span>👩‍🏫</span>
-                <span>Faculty Directory</span>
-              </span>
-              <span>→</span>
-            </Link>
-
-            <Link
-              href="/dashboard/complaints"
-              className="p-4 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl transition-all flex items-center justify-between text-xs text-slate-300 hover:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span>🛠️</span>
-                <span>CampusFix Complaints</span>
-              </span>
-              <span>→</span>
-            </Link>
-
-            <Link
-              href="/dashboard/internships"
-              className="p-4 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl transition-all flex items-center justify-between text-xs text-slate-300 hover:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span>💼</span>
-                <span>Internships & Careers</span>
-              </span>
-              <span>→</span>
-            </Link>
-
-            <Link
-              href="/dashboard/assistant"
-              className="p-4 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl transition-all flex items-center justify-between text-xs text-slate-300 hover:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span>🤖</span>
-                <span>Campus AI Assistant</span>
-              </span>
-              <span>→</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

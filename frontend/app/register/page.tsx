@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import { useTheme } from "@/context/theme-context";
+import { Sun, Moon, ShieldCheck, ArrowRight } from "lucide-react";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -13,6 +15,7 @@ export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { register } = useAuth();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,97 +44,101 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans">
-      {/* Background Glow Elements */}
-      <div className="absolute top-1/3 right-1/2 translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[var(--background)] flex flex-col justify-center items-center p-4 relative font-sans">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          className="icon-button"
+          aria-label="Toggle theme"
+        >
+          {resolvedTheme === "dark" ? <Sun /> : <Moon />}
+        </button>
+      </div>
 
-      <div className="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-8 rounded-2xl shadow-2xl z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/30 text-purple-400 font-bold text-xl mb-4">
-            COS
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+      <div className="w-full max-w-md bg-[var(--card)] border border-[var(--border)] p-8 rounded-[12px] shadow-sm z-10">
+        <div className="text-center mb-6">
+          <div className="brand-mark mx-auto mb-3">C</div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
             Create an Account
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Join CampusOS to get started
+          <p className="text-xs text-muted-foreground mt-1">
+            Join CampusOS · Indian Institute of Information Technology Kottayam
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-sm flex items-start gap-2">
-            <span>⚠️</span>
-            <span>{error}</span>
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-md text-red-600 dark:text-red-400 text-xs font-medium">
+            {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-              Full Name
+            <label className="block text-xs font-semibold text-foreground mb-1">
+              Full Name *
             </label>
             <input
               type="text"
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Jane Doe"
-              className="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
+              placeholder="e.g. Prince Kumar"
+              className="w-full px-3 py-2 rounded-md bg-[var(--muted)] border border-[var(--border)] text-foreground placeholder-muted-foreground focus:outline-none focus:border-blue-500 text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-              Email Address
+            <label className="block text-xs font-semibold text-foreground mb-1">
+              Email Address *
             </label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="jane.doe@university.edu"
-              className="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
+              placeholder="e.g. prince@campusos.test"
+              className="w-full px-3 py-2 rounded-md bg-[var(--muted)] border border-[var(--border)] text-foreground placeholder-muted-foreground focus:outline-none focus:border-blue-500 text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-              Password
+            <label className="block text-xs font-semibold text-foreground mb-1">
+              Password * (min 8 characters)
             </label>
             <input
               type="password"
               required
-              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
-              className="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
+              placeholder="••••••••"
+              className="w-full px-3 py-2 rounded-md bg-[var(--muted)] border border-[var(--border)] text-foreground placeholder-muted-foreground focus:outline-none focus:border-blue-500 text-xs"
             />
-          </div>
-
-          <div className="p-3 bg-slate-950/50 rounded-lg border border-slate-800 text-xs text-slate-400">
-            ℹ️ New accounts are registered with the <strong className="text-purple-400">STUDENT</strong> role by default.
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 px-4 bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white font-medium rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            {isSubmitting ? "Creating account..." : "Register Account"}
+            <span>{isSubmitting ? "Creating account..." : "Sign Up"}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-slate-400">
+        <div className="mt-6 text-center text-xs text-muted-foreground">
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
+            className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
           >
             Sign in
           </Link>
         </div>
+      </div>
+
+      <div className="mt-6 text-[11px] text-muted-foreground flex items-center gap-1.5">
+        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+        <span>CampusOS · Encrypted with Argon2id &amp; HttpOnly JWT</span>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import {
   createClub,
   fetchClubs,
@@ -11,6 +12,7 @@ import {
   leaveClub,
 } from "@/services/events-clubs";
 import type { Club } from "@/types";
+import { Users, Plus } from "lucide-react";
 
 export default function ClubsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -119,10 +121,10 @@ export default function ClubsPage() {
 
   if (authLoading || (!user && loading)) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading clubs...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading clubs...</span>
         </div>
       </div>
     );
@@ -131,30 +133,24 @@ export default function ClubsPage() {
   const isAdmin = user?.role === "ADMIN";
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative">
-      <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-        {/* Navigation Breadcrumb */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
           <div>
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
-              <Link href="/dashboard" className="hover:text-indigo-400 transition-colors">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span className="text-slate-200 font-medium">Clubs</span>
-            </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Student Clubs & Societies</h1>
-            <p className="text-sm text-slate-400 mt-1">
-              Join student-led organizations, technical societies, and cultural communities.
+            <div className="eyebrow">Student Life & Communities</div>
+            <h1>Student Clubs &amp; Societies</h1>
+            <p>
+              Join student-led technical organizations, robotics teams, and campus chapters · IIIT Kottayam
             </p>
           </div>
 
           {isAdmin && (
             <button
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-600/20"
+              className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              {showCreateForm ? "Cancel" : "+ Create Club"}
+              <Plus className="w-4 h-4" />
+              <span>{showCreateForm ? "Cancel" : "Create Club"}</span>
             </button>
           )}
         </div>
@@ -173,58 +169,58 @@ export default function ClubsPage() {
         {isAdmin && showCreateForm && (
           <form
             onSubmit={handleCreateClub}
-            className="p-6 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-4 shadow-xl"
+            className="p-5 mb-6 bg-[var(--card)] border border-[var(--border)] rounded-[9px] space-y-4 shadow-sm"
           >
-            <h2 className="text-lg font-semibold text-white">Create New Club</h2>
+            <h2 className="text-sm font-bold text-foreground">Create New Club</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1">Club Name *</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Club Name *</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Robotics Club"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1">Category *</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Category *</label>
                 <input
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. Technology, Arts, Sports, Cultural"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-slate-400 mb-1">Description (Optional)</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Description (Optional)</label>
                 <input
                   type="text"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="e.g. A community for building competitive hardware and IoT systems"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setShowCreateForm(false)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm transition-all"
+                className="px-3.5 py-1.5 bg-muted text-muted-foreground hover:text-foreground rounded-md text-xs font-medium transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={creating}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-all disabled:opacity-50"
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors disabled:opacity-50"
               >
                 {creating ? "Creating..." : "Create Club"}
               </button>
@@ -234,20 +230,20 @@ export default function ClubsPage() {
 
         {/* Clubs Grid */}
         {loading ? (
-          <div className="p-12 text-center text-slate-400 text-sm">
-            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+          <div className="p-12 text-center text-muted-foreground text-xs">
+            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
             Loading clubs...
           </div>
         ) : clubs.length === 0 ? (
-          <div className="p-12 bg-slate-900/40 border border-slate-800/80 rounded-3xl text-center space-y-2">
-            <div className="text-4xl mb-2">👥</div>
-            <h3 className="text-lg font-semibold text-white">No clubs found</h3>
-            <p className="text-sm text-slate-400">
+          <div className="p-12 bg-[var(--card)] border border-[var(--border)] rounded-[9px] text-center space-y-2">
+            <div className="text-3xl mb-1">👥</div>
+            <h3 className="text-sm font-semibold text-foreground">No clubs found</h3>
+            <p className="text-xs text-muted-foreground">
               There are no student clubs registered yet.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {clubs.map((club) => {
               const isJoined = joinedClubIds.has(club.id);
               const isActing = actionLoading === club.id;
@@ -255,32 +251,32 @@ export default function ClubsPage() {
               return (
                 <div
                   key={club.id}
-                  className="p-6 bg-slate-900/80 border border-slate-800 hover:border-slate-700 rounded-3xl space-y-4 flex flex-col justify-between shadow-xl transition-all"
+                  className="p-5 bg-[var(--card)] border border-[var(--border)] rounded-[9px] space-y-3 flex flex-col justify-between shadow-sm transition-all hover:border-blue-500/40"
                 >
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold rounded-full">
+                      <span className="status-badge blue">
                         {club.category}
                       </span>
                       {isJoined && (
-                        <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-medium rounded-full">
-                          Member
+                        <span className="status-badge green">
+                          ✓ Member
                         </span>
                       )}
                     </div>
 
-                    <h2 className="text-xl font-bold text-white tracking-tight">{club.name}</h2>
+                    <h2 className="text-sm font-bold text-foreground tracking-tight">{club.name}</h2>
 
                     {club.description && (
-                      <p className="text-sm text-slate-300 leading-relaxed pt-1">
+                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
                         {club.description}
                       </p>
                     )}
                   </div>
 
-                  <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span className="text-xs text-slate-500">
-                      Founded {new Date(club.created_at).toLocaleDateString()}
+                  <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between">
+                    <span className="text-[10px] text-muted-foreground">
+                      Chapter · IIIT Kottayam
                     </span>
 
                     {user?.role === "STUDENT" && (
@@ -289,7 +285,7 @@ export default function ClubsPage() {
                           <button
                             onClick={() => handleLeave(club.id)}
                             disabled={isActing}
-                            className="px-4 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
+                            className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                           >
                             {isActing ? "Leaving..." : "Leave"}
                           </button>
@@ -297,9 +293,9 @@ export default function ClubsPage() {
                           <button
                             onClick={() => handleJoin(club.id)}
                             disabled={isActing}
-                            className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition-all disabled:opacity-50 shadow-md shadow-indigo-600/20"
+                            className="px-3.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors disabled:opacity-50 shadow-sm cursor-pointer"
                           >
-                            {isActing ? "Joining..." : "Join"}
+                            {isActing ? "Joining..." : "Join Club"}
                           </button>
                         )}
                       </div>
@@ -310,7 +306,7 @@ export default function ClubsPage() {
             })}
           </div>
         )}
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

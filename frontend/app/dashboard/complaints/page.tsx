@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import {
   createComplaint,
   fetchAllComplaints,
@@ -11,6 +12,7 @@ import {
   updateComplaintStatus,
 } from "@/services/complaints";
 import type { Complaint, ComplaintStatus } from "@/types";
+import { Wrench, Plus, MapPin, Calendar, Clock } from "lucide-react";
 
 export default function ComplaintsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -118,10 +120,10 @@ export default function ComplaintsPage() {
 
   if (authLoading || (!user && loading)) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading complaints...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading complaints...</span>
         </div>
       </div>
     );
@@ -129,57 +131,36 @@ export default function ComplaintsPage() {
 
   const isAdmin = user?.role === "ADMIN";
 
-  const getStatusBadgeStyle = (status: ComplaintStatus) => {
-    switch (status) {
-      case "OPEN":
-        return "bg-amber-500/10 text-amber-400 border-amber-500/30";
-      case "IN_PROGRESS":
-        return "bg-sky-500/10 text-sky-400 border-sky-500/30";
-      case "RESOLVED":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-      default:
-        return "bg-slate-800 text-slate-300 border-slate-700";
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative">
-      <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-        {/* Navigation Breadcrumb */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
           <div>
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
-              <Link href="/dashboard" className="hover:text-indigo-400 transition-colors">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span className="text-slate-200 font-medium">CampusFix</span>
-            </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              {isAdmin ? "CampusFix Complaints (Admin)" : "CampusFix — Issue Reporting"}
-            </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <div className="eyebrow">Service Desk & Maintenance</div>
+            <h1>CampusFix Service Desk</h1>
+            <p>
               {isAdmin
-                ? "Review reported issues across university facilities and advance resolution lifecycle."
-                : "Report maintenance, electrical, IT, or hostel issues and track real-time resolution status."}
+                ? "Review reported facility issues and advance resolution status across campus · IIIT Kottayam"
+                : "Report maintenance, electrical, Wi-Fi, or hostel issues with real-time tracking · IIIT Kottayam"}
             </p>
           </div>
 
           {!isAdmin && (
             <button
               onClick={() => setShowSubmitForm(!showSubmitForm)}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-600/20"
+              className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              {showSubmitForm ? "Cancel" : "+ Submit Complaint"}
+              <Plus className="w-4 h-4" />
+              <span>{showSubmitForm ? "Cancel" : "Report Issue"}</span>
             </button>
           )}
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-2xl text-sm flex items-center justify-between">
+          <div className="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 rounded-md text-xs flex items-center justify-between font-medium">
             <span>{error}</span>
-            <button onClick={() => setError(null)} className="text-rose-400 hover:text-rose-300">
+            <button onClick={() => setError(null)} className="text-red-600 dark:text-red-400 cursor-pointer">
               ✕
             </button>
           </div>
@@ -189,28 +170,28 @@ export default function ComplaintsPage() {
         {!isAdmin && showSubmitForm && (
           <form
             onSubmit={handleSubmitComplaint}
-            className="p-6 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-4 shadow-xl"
+            className="p-5 mb-6 bg-[var(--card)] border border-[var(--border)] rounded-[9px] space-y-4 shadow-sm"
           >
-            <h2 className="text-lg font-semibold text-white">Report New Campus Issue</h2>
+            <h2 className="text-sm font-bold text-foreground">Report New Campus Issue</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1">Issue Title *</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Issue Title *</label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Broken water purifier on 3rd floor"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  placeholder="e.g. Wi-Fi Connectivity in Block C"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1">Category *</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Category *</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                   required
                 >
                   <option value="Maintenance">Maintenance</option>
@@ -223,42 +204,42 @@ export default function ComplaintsPage() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-slate-400 mb-1">Location *</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Location *</label>
                 <input
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Engineering Wing B, 3rd Floor Corridor"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  placeholder="e.g. Academic Block 2, Room 304"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-slate-400 mb-1">Description *</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Description *</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe the issue in detail..."
                   rows={3}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setShowSubmitForm(false)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm transition-all"
+                className="px-3.5 py-1.5 bg-muted text-muted-foreground hover:text-foreground rounded-md text-xs font-medium transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-all disabled:opacity-50"
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors disabled:opacity-50"
               >
                 {submitting ? "Submitting..." : "Submit Complaint"}
               </button>
@@ -268,63 +249,70 @@ export default function ComplaintsPage() {
 
         {/* Complaints List */}
         {loading ? (
-          <div className="p-12 text-center text-slate-400 text-sm">
-            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+          <div className="p-12 text-center text-muted-foreground text-xs">
+            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
             Loading complaints...
           </div>
         ) : complaints.length === 0 ? (
-          <div className="p-12 bg-slate-900/40 border border-slate-800/80 rounded-3xl text-center space-y-2">
-            <div className="text-4xl mb-2">🛠️</div>
-            <h3 className="text-lg font-semibold text-white">No complaints found</h3>
-            <p className="text-sm text-slate-400">
+          <div className="p-12 bg-[var(--card)] border border-[var(--border)] rounded-[9px] text-center space-y-2">
+            <div className="text-3xl mb-1">🛠️</div>
+            <h3 className="text-sm font-semibold text-foreground">No complaints found</h3>
+            <p className="text-xs text-muted-foreground">
               {isAdmin
                 ? "There are currently no active complaints logged across campus."
                 : "You have not submitted any complaints yet."}
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {complaints.map((complaint) => {
               const isActing = actionLoading === complaint.id;
+              const tone = complaint.status === "RESOLVED" ? "green" : complaint.status === "IN_PROGRESS" ? "amber" : "blue";
 
               return (
                 <div
                   key={complaint.id}
-                  className="p-6 bg-slate-900/80 border border-slate-800 hover:border-slate-700 rounded-3xl space-y-4 shadow-xl transition-all"
+                  className="p-5 bg-[var(--card)] border border-[var(--border)] rounded-[9px] shadow-sm transition-all hover:border-blue-500/40"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div className="space-y-1.5 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span
-                          className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider border ${getStatusBadgeStyle(
-                            complaint.status
-                          )}`}
-                        >
-                          {complaint.status}
-                        </span>
-                        <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-xs rounded-full">
-                          {complaint.category}
-                        </span>
-                      </div>
-
-                      <h2 className="text-lg font-bold text-white tracking-tight pt-1">
-                        {complaint.title}
-                      </h2>
-
-                      <p className="text-sm text-slate-300 leading-relaxed">
-                        {complaint.description}
-                      </p>
-
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 pt-2">
-                        <span>📍 {complaint.location}</span>
-                        <span>
-                          🗓️ Reported {new Date(complaint.created_at).toLocaleDateString()}
-                        </span>
-                        {complaint.updated_at && (
-                          <span>
-                            Updated {new Date(complaint.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <span className={`fix-icon ${tone} mt-0.5`}>
+                        <Wrench />
+                      </span>
+                      <div className="space-y-1.5 flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={`status-badge ${tone}`}>
+                            {complaint.status.replace("_", " ")}
                           </span>
-                        )}
+                          <span className="text-[10px] text-muted-foreground bg-[var(--muted)] px-2 py-0.5 rounded">
+                            {complaint.category}
+                          </span>
+                        </div>
+
+                        <h2 className="text-sm font-bold text-foreground tracking-tight pt-0.5">
+                          {complaint.title}
+                        </h2>
+
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {complaint.description}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-4 text-[11px] text-muted-foreground pt-1.5">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            <span>{complaint.location}</span>
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>Reported {new Date(complaint.created_at).toLocaleDateString()}</span>
+                          </span>
+                          {complaint.updated_at && (
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>Updated {new Date(complaint.updated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -335,7 +323,7 @@ export default function ComplaintsPage() {
                           <button
                             onClick={() => handleAdvanceStatus(complaint.id, "OPEN")}
                             disabled={isActing}
-                            className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-all disabled:opacity-50 shadow-md shadow-sky-600/20"
+                            className="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/20 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                           >
                             {isActing ? "Updating..." : "Mark In Progress ➔"}
                           </button>
@@ -344,14 +332,14 @@ export default function ComplaintsPage() {
                           <button
                             onClick={() => handleAdvanceStatus(complaint.id, "IN_PROGRESS")}
                             disabled={isActing}
-                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition-all disabled:opacity-50 shadow-md shadow-emerald-600/20"
+                            className="px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-md text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                           >
                             {isActing ? "Updating..." : "Resolve Issue ✓"}
                           </button>
                         )}
                         {complaint.status === "RESOLVED" && (
-                          <span className="text-xs text-emerald-400 font-medium px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-                            ✓ Issue Closed
+                          <span className="status-badge green">
+                            ✓ Issue Resolved
                           </span>
                         )}
                       </div>
@@ -362,7 +350,7 @@ export default function ComplaintsPage() {
             })}
           </div>
         )}
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

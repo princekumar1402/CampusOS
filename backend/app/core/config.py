@@ -10,8 +10,12 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
+import email_validator
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Enable RFC 6761 special-use / reserved domains (e.g. .test) for dev & testing environments
+email_validator.TEST_ENVIRONMENT = True
 
 
 class Settings(BaseSettings):

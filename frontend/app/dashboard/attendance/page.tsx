@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import {
   fetchCourses,
   createCourse,
@@ -270,72 +271,46 @@ export default function AttendanceDashboardPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading attendance module...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading attendance module...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative overflow-hidden">
-      {/* Background Lighting */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto space-y-8 relative z-10">
-        {/* Header Bar */}
-        <header className="flex justify-between items-center bg-slate-900/60 backdrop-blur-xl border border-slate-800 p-4 px-6 rounded-2xl">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1"
-            >
-              <span>←</span>
-              <span>Dashboard</span>
-            </Link>
-            <div className="h-4 w-px bg-slate-800" />
-            <div className="flex items-center gap-2">
-              <span className="text-xl">📋</span>
-              <h1 className="font-bold text-white tracking-wide text-lg">
-                Attendance Management
-              </h1>
-            </div>
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
+          <div>
+            <div className="eyebrow">Academic Operations</div>
+            <h1>Attendance Intelligence</h1>
+            <p>
+              IIIT Kottayam · 75% Mandatory Attendance Regulation
+              <span></span>
+              {user.role} Portal
+            </p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-slate-400 hidden sm:inline">
-              Logged in as <strong className="text-slate-200">{user.full_name}</strong>
-            </span>
-            <button
-              onClick={() => {
-                logout();
-                router.push("/login");
-              }}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium border border-slate-700 transition-all"
-            >
-              Logout ➔
-            </button>
-          </div>
-        </header>
+        </div>
 
         {/* Global Feedback Banner */}
         {feedback && (
           <div
-            className={`p-4 rounded-2xl border flex items-center justify-between text-sm ${
+            className={`p-3.5 px-4 mb-4 rounded-lg border flex items-center justify-between text-xs font-medium ${
               feedback.type === "success"
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-                : "bg-rose-500/10 border-rose-500/30 text-rose-300"
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                : "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400"
             }`}
           >
             <div className="flex items-center gap-2">
-              <span>{feedback.type === "success" ? "✅" : "⚠️"}</span>
+              <span>{feedback.type === "success" ? "✓" : "⚠️"}</span>
               <span>{feedback.text}</span>
             </div>
             <button
               onClick={() => setFeedback(null)}
-              className="text-slate-400 hover:text-slate-200 text-xs"
+              className="text-muted-foreground hover:text-foreground text-xs"
             >
               ✕
             </button>
@@ -913,7 +888,7 @@ export default function AttendanceDashboardPage() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

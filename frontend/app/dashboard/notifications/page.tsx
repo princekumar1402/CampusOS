@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import {
   fetchNotifications,
   markNotificationRead,
 } from "@/services/complaints";
 import type { Notification } from "@/types";
+import { Bell, Check, Clock } from "lucide-react";
 
 export default function NotificationsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -61,10 +63,10 @@ export default function NotificationsPage() {
 
   if (authLoading || (!user && loading)) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading notifications...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading notifications...</span>
         </div>
       </div>
     );
@@ -73,37 +75,29 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative">
-      <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-        {/* Navigation Breadcrumb */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+    <AppShell unreadCount={unreadCount}>
+      <main className="dashboard">
+        <div className="page-intro">
           <div>
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
-              <Link href="/dashboard" className="hover:text-indigo-400 transition-colors">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span className="text-slate-200 font-medium">Notifications</span>
-            </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-              <span>Notifications</span>
-              {unreadCount > 0 && (
-                <span className="px-2.5 py-0.5 bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 text-xs font-semibold rounded-full">
-                  {unreadCount} new
-                </span>
-              )}
-            </h1>
-            <p className="text-sm text-slate-400 mt-1">
-              Real-time updates regarding your complaints, activities, and campus notices.
+            <div className="eyebrow">Activity & Alerts</div>
+            <h1>Campus Notifications</h1>
+            <p>
+              Academic warnings, event reminders, service requests, and placement alerts · IIIT Kottayam
             </p>
           </div>
+
+          {unreadCount > 0 && (
+            <span className="nav-count text-xs px-3 py-1">
+              {unreadCount} unread
+            </span>
+          )}
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-2xl text-sm flex items-center justify-between">
+          <div className="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 rounded-md text-xs flex items-center justify-between font-medium">
             <span>{error}</span>
-            <button onClick={() => setError(null)} className="text-rose-400 hover:text-rose-300">
+            <button onClick={() => setError(null)} className="text-red-600 dark:text-red-400 cursor-pointer">
               ✕
             </button>
           </div>
@@ -111,45 +105,53 @@ export default function NotificationsPage() {
 
         {/* Notifications List */}
         {loading ? (
-          <div className="p-12 text-center text-slate-400 text-sm">
-            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+          <div className="p-12 text-center text-muted-foreground text-xs">
+            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
             Loading notifications...
           </div>
         ) : notifications.length === 0 ? (
-          <div className="p-12 bg-slate-900/40 border border-slate-800/80 rounded-3xl text-center space-y-2">
-            <div className="text-4xl mb-2">🔔</div>
-            <h3 className="text-lg font-semibold text-white">No notifications</h3>
-            <p className="text-sm text-slate-400">
-              You are all caught up! You will be notified when your complaint statuses update.
+          <div className="p-12 bg-[var(--card)] border border-[var(--border)] rounded-[9px] text-center space-y-2">
+            <div className="text-3xl mb-1">🔔</div>
+            <h3 className="text-sm font-semibold text-foreground">All Caught Up</h3>
+            <p className="text-xs text-muted-foreground">
+              You have no pending notifications at this time.
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {notifications.map((notif) => {
               const isActing = actionLoading === notif.id;
 
               return (
                 <div
                   key={notif.id}
-                  className={`p-5 rounded-2xl border transition-all flex items-start justify-between gap-4 ${
+                  className={`p-4 rounded-[9px] border transition-all flex items-start justify-between gap-4 ${
                     notif.is_read
-                      ? "bg-slate-900/40 border-slate-800/80 text-slate-300"
-                      : "bg-slate-900/90 border-indigo-500/30 text-white shadow-lg shadow-indigo-500/5"
+                      ? "bg-[var(--card)] border-[var(--border)] text-muted-foreground"
+                      : "bg-[var(--card)] border-blue-500/40 text-foreground shadow-sm"
                   }`}
                 >
-                  <div className="flex items-start gap-3.5 flex-1">
-                    <div className="pt-1">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="pt-1 flex-shrink-0">
                       {notif.is_read ? (
-                        <span className="w-2.5 h-2.5 rounded-full bg-slate-700 block" />
+                        <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700 block" />
                       ) : (
-                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 block animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-blue-600 block" />
                       )}
                     </div>
 
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-relaxed">{notif.message}</p>
-                      <span className="text-xs text-slate-500 block">
-                        {new Date(notif.created_at).toLocaleString()}
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <p className="text-xs font-medium leading-relaxed text-foreground">
+                        {notif.message}
+                      </p>
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {new Date(notif.created_at).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
                       </span>
                     </div>
                   </div>
@@ -158,9 +160,10 @@ export default function NotificationsPage() {
                     <button
                       onClick={() => handleMarkAsRead(notif.id)}
                       disabled={isActing}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-xl text-xs font-medium transition-all shrink-0 disabled:opacity-50"
+                      className="px-2.5 py-1 bg-muted hover:bg-muted/80 text-foreground border border-[var(--border)] rounded-md text-[11px] font-semibold transition-colors shrink-0 disabled:opacity-50 cursor-pointer flex items-center gap-1"
                     >
-                      {isActing ? "Marking..." : "Mark Read"}
+                      <Check className="w-3 h-3 text-blue-600" />
+                      <span>{isActing ? "..." : "Mark Read"}</span>
                     </button>
                   )}
                 </div>
@@ -168,7 +171,7 @@ export default function NotificationsPage() {
             })}
           </div>
         )}
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

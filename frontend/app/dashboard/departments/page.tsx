@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
+import AppShell from "@/components/layout/AppShell";
 import { createDepartment, fetchDepartments } from "@/services/academic";
 import type { Department } from "@/types";
+import { GraduationCap, Plus, Building2 } from "lucide-react";
 
 export default function DepartmentsPage() {
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
 
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -68,10 +70,10 @@ export default function DepartmentsPage() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Loading academic departments...</span>
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-muted-foreground text-sm font-medium">Loading academic departments...</span>
         </div>
       </div>
     );
@@ -80,104 +82,89 @@ export default function DepartmentsPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-6 md:p-12 relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-        {/* Header Navigation */}
-        <header className="flex justify-between items-center bg-slate-900/60 backdrop-blur-xl border border-slate-800 p-4 px-6 rounded-2xl">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 font-bold flex items-center justify-center hover:scale-105 transition-transform">
-              COS
-            </Link>
-            <div>
-              <h1 className="font-semibold text-white tracking-wide">Academic Departments</h1>
-              <p className="text-xs text-slate-400">CampusOS Organizational Catalog</p>
-            </div>
+    <AppShell>
+      <main className="dashboard">
+        <div className="page-intro">
+          <div>
+            <div className="eyebrow">Academic Structure</div>
+            <h1>Academic Departments</h1>
+            <p>
+              Organizational Catalog &amp; Degree Programs · IIIT Kottayam
+            </p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-sm font-medium border border-slate-700 transition-all"
-            >
-              ← Back to Dashboard
-            </Link>
-          </div>
-        </header>
+        </div>
 
         {error && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-sm flex items-center gap-2">
-            <span>⚠️</span>
+          <div className="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 rounded-md text-red-600 dark:text-red-400 text-xs flex items-center justify-between font-medium">
             <span>{error}</span>
+            <button onClick={() => setError(null)} className="cursor-pointer">✕</button>
           </div>
         )}
 
         {formSuccess && (
-          <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-sm flex items-center gap-2">
-            <span>✅</span>
+          <div className="p-3.5 mb-4 bg-emerald-500/10 border border-emerald-500/30 rounded-md text-emerald-700 dark:text-emerald-400 text-xs flex items-center justify-between font-medium">
             <span>{formSuccess}</span>
+            <button onClick={() => setFormSuccess(null)} className="cursor-pointer">✕</button>
           </div>
         )}
 
         {/* Admin Creation Form */}
         {user.role === "ADMIN" && (
-          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <span>🏛️</span>
+          <div className="p-5 mb-6 bg-[var(--card)] border border-[var(--border)] rounded-[9px] space-y-4 shadow-sm">
+            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Plus className="w-4 h-4 text-blue-600" />
               <span>Create New Department</span>
             </h2>
 
             <form onSubmit={handleCreateDepartment} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Department Code
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Department Code *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="CS, EE, ME"
+                  placeholder="e.g. CSE, ECE, MATH"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground uppercase focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Department Name
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Department Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Computer Science & Engineering"
+                  placeholder="e.g. Computer Science and Engineering"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Description
+                <label className="block text-xs font-medium text-muted-foreground mb-1">
+                  Description (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="School of Computing"
+                  placeholder="e.g. School of Computer Sciences"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  className="w-full bg-[var(--muted)] border border-[var(--border)] rounded-md px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="md:col-span-3 flex justify-end mt-2">
+              <div className="md:col-span-3 flex justify-end">
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-purple-500/20 disabled:opacity-50"
+                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  {isCreating ? "Creating..." : "+ Add Department"}
+                  {isCreating ? "Creating..." : "Save Department"}
                 </button>
               </div>
             </form>
@@ -185,53 +172,53 @@ export default function DepartmentsPage() {
         )}
 
         {/* Department Directory List */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-white tracking-tight">
+            <h2 className="text-sm font-bold text-foreground">
               Department Catalog ({departments.length})
             </h2>
           </div>
 
           {departments.length === 0 ? (
-            <div className="p-8 bg-slate-900/40 border border-slate-800 rounded-2xl text-center text-slate-400">
-              No departments registered yet. {user.role === "ADMIN" && "Use the form above to add the first department."}
+            <div className="p-12 bg-[var(--card)] border border-[var(--border)] rounded-[9px] text-center text-xs text-muted-foreground">
+              No departments registered yet.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {departments.map((dept) => (
                 <div
                   key={dept.id}
-                  className="p-6 bg-slate-900/70 border border-slate-800 hover:border-purple-500/40 rounded-2xl transition-all shadow-lg group"
+                  className="p-5 bg-[var(--card)] border border-[var(--border)] hover:border-blue-500/40 rounded-[9px] transition-all shadow-sm flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/30 rounded-lg text-xs font-bold font-mono">
-                      {dept.code}
-                    </span>
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold">
-                      ID: {dept.id.substring(0, 8)}...
-                    </span>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="status-badge blue font-mono font-bold">
+                        {dept.code}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        IIIT Kottayam
+                      </span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-foreground">
+                      {dept.name}
+                    </h3>
+
+                    <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">
+                      {dept.description || "Official academic department of IIIT Kottayam."}
+                    </p>
                   </div>
 
-                  <h3 className="text-lg font-bold text-white group-hover:text-purple-300 transition-colors">
-                    {dept.name}
-                  </h3>
-
-                  <p className="text-xs text-slate-400 mt-2 line-clamp-2">
-                    {dept.description || "No description provided."}
-                  </p>
-
-                  <div className="mt-4 pt-4 border-t border-slate-800/80 flex justify-between items-center text-[11px] text-slate-500">
-                    <span>Added {new Date(dept.created_at).toLocaleDateString()}</span>
-                    <span className="text-indigo-400 font-medium group-hover:translate-x-1 transition-transform">
-                      Active Department →
-                    </span>
+                  <div className="mt-4 pt-3 border-t border-[var(--border)] flex justify-between items-center text-[10px] text-muted-foreground">
+                    <span>Est. 2026</span>
+                    <span className="text-blue-600 font-medium">Active Department</span>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </main>
+    </AppShell>
   );
 }

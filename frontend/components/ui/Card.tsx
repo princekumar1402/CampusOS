@@ -1,7 +1,5 @@
-/**
- * CampusOS — Card Component
- * Glass-morphism card container.
- */
+import React from "react";
+
 interface CardProps {
   children: React.ReactNode;
   className?: string;
@@ -12,8 +10,8 @@ export function Card({ children, className = "", hoverable = false }: CardProps)
   return (
     <div
       className={[
-        "glass-card rounded-2xl",
-        hoverable ? "feature-card cursor-pointer" : "",
+        "bg-[var(--card)] border border-[var(--border)] rounded-[9px]",
+        hoverable ? "transition-all hover:border-blue-500/40 hover:shadow-md cursor-pointer" : "",
         className,
       ].join(" ")}
     >
@@ -30,7 +28,7 @@ export function CardHeader({
   className?: string;
 }) {
   return (
-    <div className={["px-6 pt-6 pb-4 border-b border-white/5", className].join(" ")}>
+    <div className={["px-5 pt-5 pb-3 border-b border-[var(--border)]", className].join(" ")}>
       {children}
     </div>
   );
@@ -43,7 +41,7 @@ export function CardBody({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={["px-6 py-5", className].join(" ")}>{children}</div>;
+  return <div className={["p-5", className].join(" ")}>{children}</div>;
 }
 
 export function CardFooter({
@@ -54,7 +52,7 @@ export function CardFooter({
   className?: string;
 }) {
   return (
-    <div className={["px-6 pb-6 pt-4 border-t border-white/5", className].join(" ")}>
+    <div className={["px-5 pb-5 pt-3 border-t border-[var(--border)]", className].join(" ")}>
       {children}
     </div>
   );
